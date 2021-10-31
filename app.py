@@ -25,7 +25,7 @@ class_names = ['bacterial_spot', 'early_blight', 'healthy']
 
 
 # preprocess, predict and image plot function
-# @st.cache
+
 def preprocess_pred_and_plot(filename, model, class_names, img_shape=256):
     """
     Imports an image located at filename, reshapes it to img_shape, predicts
@@ -47,27 +47,25 @@ def preprocess_pred_and_plot(filename, model, class_names, img_shape=256):
 
     # Rescale the image (get all values between 0 and 1)
     img = img/255.
+    img = img.numpy()
 
     ################## Make a prediction ###############
  
     pred = model.predict(tf.expand_dims(img, axis=0))
-    print(f'"pred", {pred}')
-    print(f'"pred.argmax()", {pred.argmax()}')
-
     # Get the predicted class
     if len(pred[0]) > 1: # check for multi-class
         pred_class = class_names[pred.argmax()] # if more than one output, take the max
     else:
         pred_class = class_names[int(tf.round(pred)[0][0])] # if only one output, round
-
-    print(pred_class)
     
     ################## Make a prediction ###############
     # Plot the image and predicted class
-    plt.imshow(img)
-    plt.title(f"Prediction: {pred_class}")
-    plt.axis(False)
+    # plt.imshow(img)
+    # plt.title(f"Prediction: {pred_class}")
+    # plt.axis(False)
+    
+    st.image(img, caption= f"Predicted: {pred_class}")
 
 
-filename = f'trail images/early_blight_4.JPG'
-preprocess_pred_and_plot(filename, model, class_names, img_shape=256)
+filename = f'trail images/early_blight_2.JPG'
+st.image(preprocess_pred_and_plot(filename, model, class_names, img_shape=256))
