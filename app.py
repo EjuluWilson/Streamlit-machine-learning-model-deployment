@@ -64,8 +64,18 @@ def preprocess_pred_and_plot(filename, model, class_names, img_shape=256):
     # plt.title(f"Prediction: {pred_class}")
     # plt.axis(False)
     
-    st.image(img, caption= f"Predicted: {pred_class}")
+    return pred_class
 
+# import matplotlib.image as mpimg
+
+# uploaded_file = st.file_uploader("Choose a file")
+# uploaded_file  = mpimg.imread(uploaded_file )
+
+# st.write(type(uploaded_file))
+# st.image(uploaded_file)
+# uploaded_file = tf.constant(uploaded_file)
 
 filename = f'trail images/early_blight_2.JPG'
-st.image(preprocess_pred_and_plot(filename, model, class_names, img_shape=256))
+st.image(filename)
+imageClass = preprocess_pred_and_plot(filename, model, class_names, img_shape=256)
+st.write(f'Prediction: {imageClass}')
