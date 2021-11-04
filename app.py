@@ -7,6 +7,7 @@ import tensorflow as tf
 import numpy as np
 import pandas as pd 
 import matplotlib.pyplot as plt
+from PIL import Image
 
 
 # # Exract model from a zip file
@@ -26,6 +27,8 @@ class_names = ['bacterial_spot', 'early_blight', 'healthy']
 
 # preprocess, predict and image plot function
 
+
+
 def preprocess_pred_and_plot(filename, model, class_names, img_shape=256):
     """
     Imports an image located at filename, reshapes it to img_shape, predicts
@@ -36,14 +39,14 @@ def preprocess_pred_and_plot(filename, model, class_names, img_shape=256):
     ################### preprocessing the image ############
     
     # Read in target file (an image)
-    img = tf.io.read_file(filename)
+    # img = tf.io.read_file(filename)
 
-    # Decode the read file into a tensor & ensure 3 colour channels 
-    # (our model is trained on images with 3 colour channels and sometimes images have 4 colour channels)
-    img = tf.image.decode_image(img, channels=3)
+    # # Decode the read file into a tensor & ensure 3 colour channels 
+    # # (our model is trained on images with 3 colour channels and sometimes images have 4 colour channels)
+    # img = tf.image.decode_image(img, channels=3)
 
     # Resize the image (to the same size our model was trained on)
-    img = tf.image.resize(img, size = [img_shape, img_shape])
+    img = tf.image.resize(filename, size = [img_shape, img_shape])
 
     # Rescale the image (get all values between 0 and 1)
     img = img/255.
@@ -75,7 +78,20 @@ def preprocess_pred_and_plot(filename, model, class_names, img_shape=256):
 # st.image(uploaded_file)
 # uploaded_file = tf.constant(uploaded_file)
 
-filename = f'trail images/early_blight_2.JPG'
-st.image(filename)
-imageClass = preprocess_pred_and_plot(filename, model, class_names, img_shape=256)
-st.write(f'Prediction: {imageClass}')
+# filename = f'trail images/early_blight_2.JPG'
+# st.image(filename)
+# imageClass = preprocess_pred_and_plot(filename, model, class_names, img_shape=256)
+# st.write(f'Prediction: {imageClass}')
+
+@st.cache
+def load_image(image_file):
+	img = Image.open(image_file)
+	return img 
+
+uploaded_file = st.file_uploader("Choose image file")
+
+if uploaded_file is not None:
+    img = load_image(uploaded_file)
+    st.image(img)
+    class_name = preprocess_pred_and_plot(img, model, class_names, img_shape=256)
+    class_name
